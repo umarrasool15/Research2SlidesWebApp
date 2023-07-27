@@ -1,9 +1,6 @@
 package com.example.research2slidesweb;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -11,18 +8,35 @@ import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
 
-@RestController
-@RequestMapping("/api")
+@RestController // indicates the class is a Spring MVC controller that handles HTTP requests/responses
+@RequestMapping("/api") // all requests with this in the url will map to this controller
 public class Controller {
 
+    /**
+     * this method takes the information sent from the front end, runs it through the methods that will convert the pdf
+     * to a PowerPoint and returns a PowerPoint that is ready for download
+     *
+     * @PostMapping - any api requests made will be run through this method
+     * @param design - a string indicating which design
+     * @param pdfFile - the pdf that will be converted
+     * @return - a byte array which is the PowerPoint
+     */
     @PostMapping("/convert")
-    public ResponseEntity<byte[]> convertPdfToPowerPoint(@RequestBody MultipartFile pdfFile) {
+    public ResponseEntity<byte[]> convertPdfToPowerPoint(
+
+            @RequestParam("design") String design,
+            @RequestBody MultipartFile pdfFile)
+    {
         try {
 
-            // Call the PdfToPowerPointConverter class to perform the conversion
-            byte[] convertedPresentation = PdfToPowerPointConverter.convert(pdfFile);
+            System.out.println("request received");
 
-            // Set the response headers
+            design += ".pptx";
+
+            // Call the PdfToPowerPointConverter class to perform the conversion
+            byte[] convertedPresentation = PdfToPowerPointConverter.convert(pdfFile, design);
+
+            // Setting the response headers
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
             headers.setContentDispositionFormData("attachment", "converted_presentation.pptx");

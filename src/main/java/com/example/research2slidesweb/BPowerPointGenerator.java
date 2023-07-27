@@ -14,23 +14,20 @@ public class BPowerPointGenerator {
      * @param presentation - arraylist containing all the slides
      * @throws IOException
      */
-    public static byte[] create(String projectRoot, ArrayList<Slide> presentation) throws IOException {
+    public static byte[] create(String projectRoot, ArrayList<Slide> presentation, String design) throws IOException {
 
         // Get the template folder path (project directory)
+        String templatePath = projectRoot + "/content/templates/" +  design;
 
-        String templatePath = projectRoot + "/content/templates/Pine design.pptx";
-
-
-        // Use template for PowerPoint
+        // Create obj that creates a new slideshow with the given template
         XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(templatePath));
 
-        // Delete any existing slides in template
+        // Deletes any existing slides in template
         for (int i = ppt.getSlides().size() - 1; i >= 0; i--) {
             ppt.removeSlide(i);
         }
 
-        // load slide master info at index 0 this will allow you to select layout
-        // options
+        // load slide master info at index 0,
         XSLFSlideMaster slideOptions = ppt.getSlideMasters().get(0);
 
         // from the layout options we wish to use TITLE layout for the first slide
@@ -48,7 +45,7 @@ public class BPowerPointGenerator {
         XSLFTextShape subtitle1 = slide1.getPlaceholder(1);
         subtitle1.setText("");
 
-        // for every section we create one slide
+        // for every slide in our presentation arraylist we create a slide
         for (int i = 1; i < presentation.size(); i++) {
 
             // get title and body format
@@ -64,8 +61,7 @@ public class BPowerPointGenerator {
 
             slideBody.clearText();
 
-            // to get body of text we will need to use the section.txt file, this is done
-            // through getSectionBody helper
+            // get body text
             String bodyText = presentation.get(i).getParagraph();
 
             slideBody.addNewTextParagraph().addNewTextRun().setText(bodyText);

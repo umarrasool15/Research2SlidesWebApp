@@ -11,7 +11,18 @@ import java.util.ArrayList;
 
 public class PdfToPowerPointConverter {
 
-    public static byte[] convert(MultipartFile pdfFile) throws IOException, InterruptedException {
+    /**
+     * Functions as our main method essentially, all other methods are called from here to complete the conversion
+     * Process and return a completed pdf
+     *
+     * @param pdfFile
+     * @param design
+     * @return
+     * @throws IOException
+     * @throws InterruptedException
+     */
+    public static byte[] convert(MultipartFile pdfFile, String design) throws IOException, InterruptedException {
+
         // Get the binary content of the uploaded PDF file
         byte[] pdfContent = pdfFile.getBytes();
 
@@ -27,7 +38,7 @@ public class PdfToPowerPointConverter {
         // create a TextExtraction Object
         TextExtraction pdfExtractor = new TextExtraction(outputFolder);
 
-        // Load the PDF document using the provided input stream
+        // Load the PDF document using the provided bytes that makeup the pdf
         try (PDDocument document = PDDocument.load(pdfContent)) {
 
             // Extract Images & Text from the Document
@@ -47,7 +58,9 @@ public class PdfToPowerPointConverter {
             TextSummarizer.summarize(presentation);
 
             // generate PowerPoint
-            return BPowerPointGenerator.create(projectRoot, presentation);
+            return BPowerPointGenerator.create(projectRoot, presentation, design);
+
         }
+
     }
 }
