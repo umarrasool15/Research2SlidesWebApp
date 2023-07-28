@@ -4,86 +4,92 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.asynchttpclient.*;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutionException;
 
 public class TextSummarizer {
 
+    private static final String API_KEY = "q88H9vLvPMgp25ouFSDrRSb3vLL8zwRH9y3jXBXr";
+
+    private static final String REGEX_PAGE_NUMBER = "\\*{3}(?:END|START) OF PAGE \\d+\\*{3}";
+    private static final String REGEX_QUOTATIONS = "(?<!\\\\)\"";
+
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("#.##");
+
     /**
-     * summarize every paragraph for every slide in the arraylist and overwrite the non summarized paragraph
+     * prepare text for summarization, check if it is longer than 250 characters
      * @param presentation
      * @throws InterruptedException
      */
     public static void summarize(ArrayList<Slide> presentation) throws InterruptedException {
-
-        // Create a Gson object
         Gson gson = new Gson();
 
-        for (int i = 0; i <  presentation.size(); i++) {
+        for (int i = 0; i < presentation.size(); i++) {
 
-            Response response = null;
-            JsonObject jsonObject = null;
+            Slide slide = presentation.get(i);
+            String text = slide.getParagraph();
+            String summary = summarizeText(text);
+
+            if (summary != null) {
+                slide.setParagraph(summary);
+                double percentage = ((double) i / presentation.size()) * 100;
+                percentage = Double.parseDouble(DECIMAL_FORMAT.format(percentage));
+                displayDebugInfo(i, presentation.size(), summary, percentage);
+            }
+        }
+    }
+
+    /**
+     * If text is greater than 250 characters we will summarize it here
+     * @param text
+     * @return
+     */
+    private static String summarizeText(String text) {
+        String preSummarization = text.replaceAll(REGEX_PAGE_NUMBER, "")
+                .replaceAll("\\s+", " ").trim()
+                .replaceAll(REGEX_QUOTATIONS, "\\\\\"");
+
+        if (preSummarization.length() < 250) {
+            System.out.println("Paragraph has less than 250 characters, summarization not run to save tokens");
+            return preSummarization;
+        } else {
             try {
-
                 AsyncHttpClient client = new DefaultAsyncHttpClient();
-                String apiKey = "q88H9vLvPMgp25ouFSDrRSb3vLL8zwRH9y3jXBXr";
-
-                String text = presentation.get(i).getParagraph();
-                String summary = "";
-
-                String regex = "\\*{3}(?:END|START) OF PAGE \\d+\\*{3}";
-                String quotations = "(?<!\\\\)\"";
-
-                String preSummarization = text.replaceAll(regex, "");
-                preSummarization = preSummarization.replaceAll("\\s+", " ").trim();
-                preSummarization = preSummarization.replaceAll(quotations, "\\\\\"");
-
-                presentation.get(i).setParagraph(preSummarization); // if less than 250 chars we still have something to put
-
                 String requestBody = String.format("{\"text\":\"%s\", \"length\":\"short\", \"format\":\"bullets\", \"model\":\"summarize-xlarge\"}", preSummarization);
-
                 Request request = client.prepare("POST", "https://api.cohere.ai/v1/summarize")
                         .setHeader("accept", "application/json")
                         .setHeader("content-type", "application/json")
-                        .setHeader("authorization", "Bearer " + apiKey)
+                        .setHeader("authorization", "Bearer " + API_KEY)
                         .setBody(requestBody)
                         .build();
 
-                // send the request and wait for response
-                response = client.executeRequest(request).get();
-
-                // Parse the JSON string to a JsonObject
-                jsonObject = gson.fromJson(response.getResponseBody(), JsonObject.class);
+                Response response = client.executeRequest(request).get();
+                JsonObject jsonObject = new Gson().fromJson(response.getResponseBody(), JsonObject.class);
 
                 if (jsonObject.has("summary") && !jsonObject.get("summary").isJsonNull()) {
-                    // Extract the "summary" attribute
-                    summary = jsonObject.get("summary").getAsString();
-
-                } else {
-                    // Handle the case where "summary" attribute is missing or null
-                    summary = preSummarization;
+                    String summary = jsonObject.get("summary").getAsString();
+                    return summary.replaceAll("-", "");
                 }
-
-                // update presentation paragraph to bullet points
-                summary = summary.replaceAll("-", "");
-                presentation.get(i).setParagraph(summary);
-
-                System.out.println("-----------------------Text Being Summarized----------------------");
-                System.out.println("\nRaw Json for Debugging: ");
-                System.out.println(response.getResponseBody());
-                System.out.println("\nPreSummarization: ");
-                System.out.println(preSummarization);
-                System.out.println("\nAfterSummarization: ");
-                System.out.println(summary);
-                System.out.println("\n");
-
-                client.close();
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
+        return null;
+    }
 
+    /**
+     * To see detailed debugging infomration
+     * @param currentIndex
+     * @param totalSlides
+     * @param summary
+     * @param percentage
+     */
+    private static void displayDebugInfo(int currentIndex, int totalSlides, String summary, double percentage) {
+        System.out.println("_________________________________________________");
+        System.out.println("Summarized Text");
+        System.out.println("Summary: " + summary);
+        System.out.println("Percentage of PDF summarized: " + percentage + "%");
+        System.out.println(currentIndex + " paragraphs out of " + totalSlides + "\n");
     }
 }
-

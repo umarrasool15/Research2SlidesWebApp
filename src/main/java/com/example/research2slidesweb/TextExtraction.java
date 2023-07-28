@@ -18,6 +18,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -48,7 +50,7 @@ public class TextExtraction extends PDFStreamEngine {
         SaveImagesInPdf(document);
         getNumImages();
         getPage(1);
-        ExtractText(document, projectRoot);
+        extractText(document, projectRoot);
 
     }
 
@@ -76,9 +78,8 @@ public class TextExtraction extends PDFStreamEngine {
      * @param document The PDDocument from which text needs to be extracted.
      * @throws IOException If an I/O error occurs while reading the document or writing the output.
      */
-    public void ExtractText(PDDocument document, String resourcesDirectory) throws IOException {
-
-        // Creating PDFTextStripper obj
+    public void extractText(PDDocument document, String resourcesDirectory) throws IOException {
+        // Creating PDFTextStripper object
         PDFTextStripper pdfStripper = new PDFTextStripper();
         int totalPages = document.getNumberOfPages();
 
@@ -103,12 +104,11 @@ public class TextExtraction extends PDFStreamEngine {
 
             // if the lines extracted are readable and long enough, append them to text variable
             for (String line : lines) {
-                if(!junkTest(line) && line.length() > 3) {
-                    text+= line + "\n";
+                if (!junkTest(line) && line.length() > 3) {
+                    text += line + "\n";
                 }
             }
             text += ePage + "\n"; // append ending page number
-
         }
 
         // Create a PdfContent object with the extracted text
@@ -126,14 +126,16 @@ public class TextExtraction extends PDFStreamEngine {
         // Convert the PdfContent object to JSON
         String json = gsonWithEscapeHtml.toJson(pdfContent);
 
-        // Save the JSON string to a file or use it as needed
-        try (FileWriter fileWriter = new FileWriter(resourcesDirectory + "/content/output/parsedPDF.json")) {
+        // Create the output file path using Paths
+        Path outputFile = Paths.get(resourcesDirectory, "parsedPDF.json");
+
+        // Save the JSON string to a file
+        try (FileWriter fileWriter = new FileWriter(outputFile.toFile())) {
             fileWriter.write(json);
             System.out.println("JSON data has been written to 'parsedPDF.json' successfully.");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 
     /**
