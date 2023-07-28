@@ -17,7 +17,7 @@ public class BPowerPointGenerator {
     public static byte[] create(String projectRoot, ArrayList<Slide> presentation, String design) throws IOException {
 
         // Get the template folder path (project directory)
-        String templatePath = projectRoot + "/content/templates/" +  design;
+        String templatePath = projectRoot + "/ppt-templates/" +  design;
 
         // Create obj that creates a new slideshow with the given template
         XMLSlideShow ppt = new XMLSlideShow(new FileInputStream(templatePath));
@@ -70,7 +70,7 @@ public class BPowerPointGenerator {
                 for (int j = 0; j < presentation.get(i).getImage().size(); j++) {
                     XSLFSlide imgSlide = ppt.createSlide();
                     int imageNum = presentation.get(i).getImage().get(j) + 1;
-                    File image = new File(projectRoot + "/pdfextraction/content/output/image_" + imageNum + ".png");
+                    File image = new File(projectRoot + "/output/image_" + imageNum + ".png");
                     byte[] picture = IOUtils.toByteArray(new FileInputStream(image));
                     XSLFPictureData idx = ppt.addPicture(picture, XSLFPictureData.PictureType.PNG);
                     XSLFPictureShape pic = imgSlide.createPicture(idx);
@@ -96,11 +96,9 @@ public class BPowerPointGenerator {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         ppt.write(byteArrayOutputStream);
 
-
-
         // creating an FileOutputStream object
         File file = new File(presentation.get(0).getTitle() + ".pptx");
-        FileOutputStream out = new FileOutputStream(projectRoot + "/pdfextraction/content/output/" + file);
+        FileOutputStream out = new FileOutputStream(projectRoot + "/output/" + file);
 
         // saving the changes to a file
         ppt.write(out);

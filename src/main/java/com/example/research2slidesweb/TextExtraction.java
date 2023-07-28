@@ -31,8 +31,8 @@ public class TextExtraction extends PDFStreamEngine {
     private String outputFolder; // New instance variable to hold the output folder path
 
     // Constructor to set the output folder path
-    public TextExtraction(String outputFolder) {
-        this.outputFolder = outputFolder;
+    public TextExtraction(String resourcesDirectory) {
+        this.outputFolder = resourcesDirectory;
         this.array = new ArrayList<>();
     }
 
@@ -76,7 +76,7 @@ public class TextExtraction extends PDFStreamEngine {
      * @param document The PDDocument from which text needs to be extracted.
      * @throws IOException If an I/O error occurs while reading the document or writing the output.
      */
-    public void ExtractText(PDDocument document, String projectRoot) throws IOException {
+    public void ExtractText(PDDocument document, String resourcesDirectory) throws IOException {
 
         // Creating PDFTextStripper obj
         PDFTextStripper pdfStripper = new PDFTextStripper();
@@ -127,7 +127,7 @@ public class TextExtraction extends PDFStreamEngine {
         String json = gsonWithEscapeHtml.toJson(pdfContent);
 
         // Save the JSON string to a file or use it as needed
-        try (FileWriter fileWriter = new FileWriter(projectRoot + "/pdfextraction/content/output/parsedPDF.json")) {
+        try (FileWriter fileWriter = new FileWriter(resourcesDirectory + "/content/output/parsedPDF.json")) {
             fileWriter.write(json);
             System.out.println("JSON data has been written to 'parsedPDF.json' successfully.");
         } catch (IOException e) {
@@ -196,6 +196,7 @@ public class TextExtraction extends PDFStreamEngine {
     @Override
     protected void processOperator(Operator operator, List<COSBase> operands) throws IOException {
         String operation = operator.getName();
+
         // Do is the PDF operator for xobjects (like images)
         // there are a bunch of PDF operators for things like bolded text, titles,
         // diagrams, etc.
@@ -209,6 +210,7 @@ public class TextExtraction extends PDFStreamEngine {
                 // same image to output folder
                 BufferedImage bImage = image.getImage();
                 // you can change the name of the image here
+                System.out.println("TESTING: " + outputFolder);
                 ImageIO.write(bImage, "PNG", new File(outputFolder + "/image_" + imageNumber + ".png"));
                 System.out.println("Image saved.");
                 this.addItem(pageNum);

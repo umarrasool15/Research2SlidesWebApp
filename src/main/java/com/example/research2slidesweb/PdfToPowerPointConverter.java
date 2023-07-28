@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 
 public class PdfToPowerPointConverter {
@@ -21,14 +22,14 @@ public class PdfToPowerPointConverter {
      * @throws IOException
      * @throws InterruptedException
      */
-    public static byte[] convert(MultipartFile pdfFile, String design) throws IOException, InterruptedException {
+    public static byte[] convert(MultipartFile pdfFile, String design) throws IOException, InterruptedException, URISyntaxException {
 
         // Get the binary content of the uploaded PDF file
         byte[] pdfContent = pdfFile.getBytes();
 
         // Where results of pdf extraction will be output
         String projectRoot = System.getProperty("user.dir");
-        String outputFolder = projectRoot + "/pdfextraction/content/output"; // Where results of pdf extraction will be output
+        String outputFolder = projectRoot + "/content/output"; // Where results of pdf extraction will be output
 
         // images and json are stored here
         File folder = new File(outputFolder);
@@ -36,7 +37,7 @@ public class PdfToPowerPointConverter {
         outputFolder = folder.getAbsolutePath();
 
         // create a TextExtraction Object
-        TextExtraction pdfExtractor = new TextExtraction(outputFolder);
+        TextExtraction pdfExtractor = new TextExtraction(resourcesDirectory);
 
         // Load the PDF document using the provided bytes that makeup the pdf
         try (PDDocument document = PDDocument.load(pdfContent)) {
@@ -46,7 +47,7 @@ public class PdfToPowerPointConverter {
 
             // Read the JSON file
             JsonParser parser = new JsonParser();
-            JsonObject jsonObject = parser.parse(new FileReader(projectRoot + "/pdfextraction/content/output/parsedPDF.json")).getAsJsonObject();
+            JsonObject jsonObject = parser.parse(new FileReader(resourcesDirectory + "/output/parsedPDF.json")).getAsJsonObject();
 
             // Extract the content from the "text" field
             String extractedText = jsonObject.get("text").getAsString();
@@ -58,7 +59,7 @@ public class PdfToPowerPointConverter {
             TextSummarizer.summarize(presentation);
 
             // generate PowerPoint
-            return BPowerPointGenerator.create(projectRoot, presentation, design);
+            return BPowerPointGenerator.create(resourcesDirectory, presentation, design);
 
         }
 

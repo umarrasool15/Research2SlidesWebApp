@@ -7,6 +7,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
 @RestController // indicates the class is a Spring MVC controller that handles HTTP requests/responses
 @RequestMapping("/api") // all requests with this in the url will map to this controller
@@ -50,6 +51,8 @@ public class Controller {
 
             // Return an error response if conversion fails
             return ResponseEntity.status(500).body(("Error occurred during conversion: " + e.getMessage().getBytes()).getBytes());
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
         }
     }
 }

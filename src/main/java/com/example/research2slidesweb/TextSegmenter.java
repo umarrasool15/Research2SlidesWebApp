@@ -206,7 +206,7 @@ public class TextSegmenter {
             String json = objectMapper.writeValueAsString(presentation);
 
             // Save JSON to a file in the current directory
-            String fileName = "/Users/rayaankhan/repos/CP317-Project/pdfextraction/src/output/presentation.json";
+            String fileName = System.getProperty("user.dir") + "/content/output/presentation.json";
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
                 writer.write(json);
             } catch (Exception e) {
