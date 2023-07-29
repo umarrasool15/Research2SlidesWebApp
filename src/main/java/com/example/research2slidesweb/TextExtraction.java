@@ -114,7 +114,7 @@ public class TextExtraction extends PDFStreamEngine {
         // Create a PdfContent object with the extracted text
         PdfContent pdfContent = new PdfContent(text);
 
-        // Convert the PdfContent object to JSON using Gson
+        // Convert the PdfContent object to JSON
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
         // Configure Gson to preserve new lines and white spaces
@@ -212,7 +212,6 @@ public class TextExtraction extends PDFStreamEngine {
                 // same image to output folder
                 BufferedImage bImage = image.getImage();
                 // you can change the name of the image here
-                System.out.println("TESTING: " + outputFolder);
                 ImageIO.write(bImage, "PNG", new File(outputFolder + "/image_" + imageNumber + ".png"));
                 System.out.println("Image saved.");
                 this.addItem(pageNum);
@@ -245,10 +244,7 @@ public class TextExtraction extends PDFStreamEngine {
                 numberCount++;
             }
         }
-        if(letterCount>=numberCount) {
-            return false;
-        }
-        return true;
+        return letterCount < numberCount;
     }
 
 }
