@@ -40,7 +40,22 @@ public class TextSummarizer {
             String summary = summarizeText(text);
 
             if (summary != null) {
-                slide.setTitle(title);
+
+                String[] words = title.split("\\s+");
+                if (words.length > 13) {
+                    StringBuilder truncatedTitle = new StringBuilder();
+                    for (int j = 0; j < 7; j++) {
+                        truncatedTitle.append(words[i]);
+                        if (j < 6) {
+                            truncatedTitle.append(" "); // Add space between words except for the last word
+                        }
+                    }
+                    slide.setTitle(truncatedTitle.toString());
+                } else {
+                    slide.setTitle(title);
+                }
+
+
                 slide.setParagraph(summary);
                 double percentage = ((double) i / presentation.size()) * 100;
                 percentage = Double.parseDouble(DECIMAL_FORMAT.format(percentage));

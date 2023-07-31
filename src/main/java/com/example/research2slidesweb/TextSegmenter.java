@@ -29,19 +29,6 @@ public class TextSegmenter {
                 }
             }
 
-            // trim titles that are too long
-            int maxWordLimit = 6;
-
-            String[] words = firstLine.split("\\s+"); // Split the string by whitespace characters
-
-            if (words.length > maxWordLimit) {
-                StringBuilder result = new StringBuilder();
-                for (int i = 0; i < maxWordLimit; i++) {
-                    result.append(words[i]).append(" ");
-                }
-                firstLine = result.toString().trim(); // Trim any extra whitespace at the end
-            }
-
             // Count the words in the current paragraph
             int paragraphWordCount = section.split("\\s+").length;
 
