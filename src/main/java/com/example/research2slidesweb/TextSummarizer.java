@@ -2,8 +2,15 @@ package com.example.research2slidesweb;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.asynchttpclient.*;
 
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
@@ -29,9 +36,11 @@ public class TextSummarizer {
 
             Slide slide = presentation.get(i);
             String text = slide.getParagraph();
+            String title = genTitle(slide.getParagraph());
             String summary = summarizeText(text);
 
             if (summary != null) {
+                slide.setTitle(title);
                 slide.setParagraph(summary);
                 double percentage = ((double) i / presentation.size()) * 100;
                 percentage = Double.parseDouble(DECIMAL_FORMAT.format(percentage));
@@ -78,6 +87,45 @@ public class TextSummarizer {
         return null;
     }
 
+    private static String genTitle(String text) {
+        String preSummarization = text.replaceAll(REGEX_PAGE_NUMBER, "")
+                .replaceAll("\\s+", " ").trim()
+                .replaceAll(REGEX_QUOTATIONS, "\\\\\"");
+
+        String prompt = "Provide a key phrase from this text limit it to 6 words: \n\n" + preSummarization;
+        String escapedPrompt = StringEscapeUtils.escapeJson(prompt);
+
+        try {
+            AsyncHttpClient client = new DefaultAsyncHttpClient();
+            String requestBody = String.format("{\"text\":\"%s\", \"additional_Command\":\"A very short title for the paragraph no more than 4 words\", \"model\":\"summarize-xlarge\"}", escapedPrompt);
+            Request request = client.prepare("POST", "https://api.cohere.ai/v1/summarize")
+                    .setHeader("accept", "application/json")
+                    .setHeader("content-type", "application/json")
+                    .setHeader("authorization", "Bearer " + API_KEY)
+                    .setBody(requestBody)
+                    .build();
+
+            Response response = client.executeRequest(request).get();
+            JsonObject jsonObject = new Gson().fromJson(response.getResponseBody(), JsonObject.class);
+
+            System.out.println(response.getResponseBody());
+
+            if (jsonObject.has("summary") && !jsonObject.get("summary").isJsonNull()) {
+                String summary = jsonObject.get("summary").getAsString();
+                return summary.replaceAll("-", "");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
+    private static String escapeQuotes(String text) {
+        return text.replace("\"", "\\\"");
+    }
+
     /**
      * To see detailed debugging infomration
      * @param currentIndex
@@ -87,9 +135,10 @@ public class TextSummarizer {
      */
     private static void displayDebugInfo(int currentIndex, int totalSlides, String summary, double percentage) {
         System.out.println("_________________________________________________");
-        System.out.println("Summarized Text");
-        System.out.println("Summary: " + summary);
-        System.out.println("Percentage of PDF summarized: " + percentage + "%");
-        System.out.println(currentIndex + " paragraphs out of " + totalSlides + "\n");
+        System.out.println("Summarized Paragraph");
+        System.out.println("_________________________________________________");
+//        System.out.println("Summary: " + summary);
+//        System.out.println("\nPercentage of PDF summarized: " + percentage + "%");
+//        System.out.println(currentIndex + " paragraphs out of " + totalSlides + "\n");
     }
 }
