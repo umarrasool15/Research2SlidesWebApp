@@ -107,7 +107,7 @@ public class TextSummarizer {
                 .replaceAll("\\s+", " ").trim()
                 .replaceAll(REGEX_QUOTATIONS, "\\\\\"");
 
-        String prompt = "Provide a key phrase from this text limit it to 6 words: \n\n" + preSummarization;
+        String prompt = "Provide a key phrase key it short: \n\n" + preSummarization;
         String escapedPrompt = StringEscapeUtils.escapeJson(prompt);
 
         try {
