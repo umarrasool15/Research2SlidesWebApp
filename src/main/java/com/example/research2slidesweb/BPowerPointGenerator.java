@@ -68,7 +68,11 @@ public class BPowerPointGenerator {
 
             if (presentation.get(i).getImage().size() != 0) {
                 for (int j = 0; j < presentation.get(i).getImage().size(); j++) {
-                    XSLFSlide imgSlide = ppt.createSlide();
+                    //Load blank slide layout for image slides and store in imgLayout
+                    XSLFSlideLayout imgLayout = slideOptions.getLayout(SlideLayout.BLANK);
+                    //create new slide with blank imgLayout
+                    XSLFSlide imgSlide = ppt.createSlide(imgLayout);
+                    //load image onto slide
                     int imageNum = presentation.get(i).getImage().get(j) + 1;
                     File image = new File(parentDirectory + "/image_" + imageNum + ".png");
                     byte[] picture = IOUtils.toByteArray(new FileInputStream(image));
