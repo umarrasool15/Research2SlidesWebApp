@@ -29,6 +29,11 @@ public class TextSegmenter {
                 }
             }
 
+            // trim titles that are too long
+            if (firstLine.length() > 70) {
+                firstLine = firstLine.substring(0, 70);
+            }
+
             // Count the words in the current paragraph
             int paragraphWordCount = section.split("\\s+").length;
 
