@@ -38,7 +38,11 @@ Research2SlidesWeb is a Java-based web application that converts research papers
 
 ## Contributing
 
-Contributions to this project are welcome! Feel free to submit bug reports, feature requests, or pull requests.
+Contributions:
+Sebastian
+Ryan
+Erin
+Brandon
 
 ## License
 
