@@ -15,7 +15,7 @@ Research2SlidesWeb is a Java-based web application that converts research papers
 
 2. Clone the Repository: Clone this GitHub repository to your local machine.
 
-3. Build and Run: Open the project in your favorite Java IDE and build the project. Run the web application using the embedded web server or deploy it to a container like Apache Tomcat.
+3. Build and Run: Open the project in your favorite Java IDE, Ensure you have the spring boot framework configured as well as Maven and open the project. Run the application then type the following URL into your browser (http://localhost:8080/).
 
 4. Access the Web Application: Navigate to the web application's URL in your web browser to start using the PDF to PowerPoint conversion service.
 
