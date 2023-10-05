@@ -1,158 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Research2Slides</title>
-      <link rel="stylesheet" href="style.css">
-      <script src="https://kit.fontawesome.com/bc35fc51fc.js" crossorigin="anonymous"></script>
-      <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-   </head>
-   <body>
-      <div class="container">
-         <!-- Navigation Bar -->
-         <nav class="bx navbar">
-            <div class="header-logo">
-               <img src="header-logo.png" alt="">
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Research to Slides</title>
+   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<header class="bg-primary text-white text-center py-4">
+   <h1>Research to Slides</h1>
+   <p>Convert your research papers to slideshows easily</p>
+</header>
+
+<main class="container my-5">
+   <div class="upload-section mb-4">
+      <label for="pdfUpload" class="btn btn-secondary btn-lg btn-block">Upload Research Paper</label>
+      <input type="file" id="pdfUpload" class="d-none" accept=".pdf">
+   </div>
+
+   <h3 class="mb-4">Select Design:</h3>
+   <div class="row design-selection mb-4">
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design1.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design1"> Design 1
             </div>
-            <div class="header-link">
-               <a href="https://github.com/Rayaan-khan428/Research2SlidesWebApp">GitHub</a>
-               <a href="">SRS</a>
-               <a href="">Design Doc</a> 
-            </div>
-         </nav>
-         <!-- Hero Section, Image & short text with Header -->
-         <div class="bx hero">
-            <div class="hero-1 hero-cta">
-               <h1>Research2Slides.com</h1>
-               <h3>Introducing our cutting-edge PDF to PPTX converter</h3>
-               <p>Your ultimate solution for seamless document transformation! Say goodbye to tedious manual copying and pasting, as our powerful program empowers you to effortlessly convert PDF files into dynamic PowerPoint presentations with just a few clicks.</p>
-               <p> Whether you're a professional looking to streamline your workflow or a student seeking to elevate your presentations, our tool provides unrivaled accuracy, ensuring a polished final result. Unlock the full potential of your documents today!</p>
-               </p>
-               <button type="button">Try Below!</button>
-            </div>
-            <div class="hero-1 hero-image">
-               <img src="https://hislide.io/wp-content/uploads/2023/01/00-Fusion-template-for-PowerPoint-and-Keynote.webp" alt="something">
-            </div>
-         </div>
-         <!-- Features -->
-         <div class="bx content">
-            <h2>Features</h2>
-            <div class="content-info">
-               <div>
-                  <img src="ai-powered.png" alt="">
-                  <p>Powered by Co:here nlp</p>
-               </div>
-               <div>
-                  <img src="fast.webp" alt="">
-                  <p>Conversion in Seconds</p>
-               </div>
-               <div>
-                  <img src="free.png" alt="">
-                  <p>No Suprises, it's free!</p>
-               </div>
-               <div>
-                  <img src="customizable.png" alt="">
-                  <p>Easily Customizable</p>
-               </div>
-            </div>
-         </div>
-         <!-- conversion section -->
-         <div class="conversion-section">
-            <h2>Convert here!</h2>
-            <div class="upload-box" id="uploadBox">
-               <input type="file" id="pdfInput" accept=".pdf">
-               <p>Drag and drop your PDF here or click to select a file.</p>
-            </div>
-            <div class="design-section" id="designSection" style="display: none;">
-               <h2>Select a design:</h2>
-               <div class="design-options">
-                  <label>
-                  <input type="radio" name="design" value="design1">
-                  Design 1
-                  </label>
-                  <label>
-                  <input type="radio" name="design" value="design2">
-                  Design 2
-                  </label>
-                  <label>
-                  <input type="radio" name="design" value="design3">
-                  Design 3
-                  </label>
-                  <label>
-                  <input type="radio" name="design" value="design4">
-                  Design 4
-                  </label>
-                  <label>
-                  <input type="radio" name="design" value="design5">
-                  Design 5
-                  </label>
-                  <label>
-                  <input type="radio" name="design" value="design6">
-                  Design 6
-                  </label>
-                  <label>
-                  <input type="radio" name="design" value="design7">
-                  Design 7
-                  </label>
-                  <label>
-                  <input type="radio" name="design" value="design8">
-                  Design 8
-                  </label>
-               </div>
-               <button id="convertBtn">Run Conversion</button>
-               <div class="loading" id="loading" style="display: none;">
-                  <img src="https://i.gifer.com/origin/34/34338d26023e5515f6cc8969aa027bca_w200.gif" alt="Loading...">
-                  <p>Converting...</p>
-               </div>
-            </div>
-            
-            <div class="download-container">
-                <a id="downloadLink" style="display: none;">Download PowerPoint</a>
-             </div>
-        
-        </div>
-         <div class="bx content">
-            <h2>Designs You can choose from</h2>
-            <div class="design-info">
-               <div>
-                  <img src="design-covers/design1.png" alt="">
-                  <p>Design 1</p>
-               </div>
-               <div>
-                  <img src="design-covers/design2.png" alt="">
-                  <p>Design 2</p>
-               </div>
-               <div>
-                  <img src="design-covers/design3.png" alt="">
-                  <p>Design 3</p>
-               </div>
-               <div>
-                  <img src="design-covers/design4.png" alt="">
-                  <p>Design 4</p>
-               </div>
-               <div>
-                  <img src="design-covers/design5.png" alt="">
-                  <p>Design 5</p>
-               </div>
-               <div>
-                  <img src="design-covers/design6.png" alt="">
-                  <p>Design 6</p>
-               </div>
-               <div>
-                  <img src="design-covers/design7.png" alt="">
-                  <p>Design 7</p>
-               </div>
-               <div>
-                  <img src="design-covers/design8.png" alt="">
-                  <p>Design 8</p>
-               </div>
-            </div>
-         </div>
-         <div class="bx footer">
-            <p>Copyright © The Odin Project 2021</p>
          </div>
       </div>
-      <script src="script.js"></script>
-   </body>
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design2.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design2"> Design 2
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design3.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design3"> Design 3
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design4.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design4"> Design 4
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design5.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design5"> Design 5
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design6.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design6"> Design 6
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design7.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design7"> Design 7
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-3 mb-4">
+         <div class="card">
+            <img src="design-covers/design8.png" class="card-img-top" alt="Design 1">
+            <div class="card-body text-center">
+               <input type="radio" name="design" value="design8"> Design 8
+            </div>
+         </div>
+      </div>
+      <!-- Add more designs as needed -->
+   </div>
+
+   <button class="btn btn-success btn-lg btn-block mb-4">Convert</button>
+
+   <div class="download-section d-none">
+      <a href="#" class="btn btn-primary btn-lg btn-block">Download Slideshow</a>
+   </div>
+
+   <h3 class="mb-4">Features:</h3>
+   <div class="row">
+      <div class="col-md-4 mb-4">
+         <div class="card">
+            <img src="ai-powered.png" class="card-img-top" alt="AI Powered">
+            <div class="card-body">
+               <h5 class="card-title">AI Powered</h5>
+               <p class="card-text">Our tool uses advanced AI algorithms to convert research papers into slides.</p>
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+         <div class="card">
+            <img src="free.png" class="card-img-top" alt="AI Powered">
+            <div class="card-body">
+               <h5 class="card-title">Free</h5>
+               <p class="card-text">Our tool uses advanced AI algorithms to convert research papers into slides.</p>
+            </div>
+         </div>
+      </div>
+
+      <div class="col-md-4 mb-4">
+         <div class="card">
+            <img src="customizable.png" class="card-img-top" alt="AI Powered">
+            <div class="card-body">
+               <h5 class="card-title">Customizable</h5>
+               <p class="card-text">Our tool uses advanced AI algorithms to convert research papers into slides.</p>
+            </div>
+         </div>
+      </div>
+      <!-- Add more features as needed -->
+   </div>
+</main>
+
+<footer class="text-center py-3">
+   &copy; 2023 Research to Slides. All rights reserved.
+</footer>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="script.js"></script>
+
+</body>
 </html>
